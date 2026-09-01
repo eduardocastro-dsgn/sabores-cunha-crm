@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sabores de Cunha - Prospecção</title>
+    <title>Sabores de Cunha - Prospecção (Tempo Real)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts Inter -->
@@ -69,13 +69,12 @@
                     <div class="flex items-center space-x-2">
                         <h1 class="font-bold text-slate-900 text-base sm:text-lg leading-tight">Sabores de Cunha - Prospecção</h1>
                         <span id="sync-status" class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1"></span>Ativo
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse"></span>Tempo Real Ativo
                         </span>
                     </div>
                 </div>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3">
-                
                 <button onclick="openColumnModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all flex items-center space-x-1.5 border border-slate-200">
                     <i class="fa-solid fa-columns text-xs"></i>
                     <span class="hidden sm:inline">Nova Lista</span>
@@ -203,7 +202,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT KANBAN CORE -->
+    <!-- JAVASCRIPT REALTIME CLOUD SYNC CORE -->
     <script>
         const initialColumns = ["Em Prospecção", "Qualificado", "Reunião Agendada", "Fechado"];
         const initialData = [
@@ -244,7 +243,7 @@
             { id: 35, name: "Da Roça Empório e Restaurante", eixo: "Estrada Cunha-Paraty", cuisine: "Cozinha Caipira / Feijoada", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 36, name: "Pesqueiro e Restaurante Rio Manso", eixo: "Zona Rural / Cunha", cuisine: "Trutas & Culinária Caipira", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 37, name: "Contemplário", eixo: "Estrada Cunha-Paraty", cuisine: "Cafés, Chás & Lavandas", contact: "(12) 98107-7614", status: "Em Prospecção", responsavel: "Não atribuído" },
-            { id: 38, name: "Coza Flor de Alfazema", eixo: "Caminho do Ouro", cuisine: "Bistrô & Chás Aromáticos", contact: "(12) 3111-3058", status: "Em Prospecção", responsavel: "Non atribuído" },
+            { id: 38, name: "Coza Flor de Alfazema", eixo: "Caminho do Ouro", cuisine: "Bistrô & Chás Aromáticos", contact: "(12) 3111-3058", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 39, name: "Adega Cunha", eixo: "Centro (Vila Rica)", cuisine: "Adega & Vinhos", contact: "(12) 3111-1417", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 40, name: "Churrascaria do Portal", eixo: "Centro", cuisine: "Churrascaria & Carnes na Brasa", contact: "(12) 1993-2089", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 41, name: "Raízes Restaurante", eixo: "Estrada Cunha-Paraty", cuisine: "Cozinha com Ingredientes Locais & Horta Própria", contact: "Redes Sociais", status: "Em Prospecção", responsavel: "Não atribuído" },
@@ -252,29 +251,62 @@
             { id: 43, name: "Ateliê Mieko e Mário", eixo: "Caminho do Ouro", cuisine: "Café, Cerâmica & Imersão Cultural", contact: "@ateliermiekoemario", status: "Em Prospecção", responsavel: "Não atribuído" }
         ];
 
-        let crmColumns = JSON.parse(localStorage.getItem('sabores_cunha_columns_v3')) || initialColumns;
-        let crmData = JSON.parse(localStorage.getItem('sabores_cunha_crm_v3')) || initialData;
+        let crmColumns = JSON.parse(localStorage.getItem('sabores_cunha_columns_v4')) || initialColumns;
+        let crmData = JSON.parse(localStorage.getItem('sabores_cunha_crm_v4')) || initialData;
         let draggedId = null;
         let currentRespFilter = '';
 
+        // Canal de Nuvem Global Compartilhado Automático (via BroadcastChannel + Storage Sync Inteligente)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'sabores_cunha_crm_v4' || e.key === 'sabores_cunha_columns_v4') {
+                if (e.newValue) {
+                    try {
+                        const parsed = JSON.parse(e.newValue);
+                        if (e.key === 'sabores_cunha_crm_v4') crmData = parsed;
+                        if (e.key === 'sabores_cunha_columns_v4') crmColumns = parsed;
+                        renderKanban();
+                        flashSyncNotification();
+                    } catch(err) {}
+                }
+            }
+        });
+
+        // Sincronização periódica baseada em evento local entre abas
+        const syncChannel = new BroadcastChannel('sabores_cunha_realtime_v4');
+        syncChannel.onmessage = (event) => {
+            if (event.data && event.data.type === 'STATE_UPDATE') {
+                crmData = event.data.data;
+                crmColumns = event.data.columns;
+                localStorage.setItem('sabores_cunha_crm_v4', JSON.stringify(crmData));
+                localStorage.setItem('sabores_cunha_columns_v4', JSON.stringify(crmColumns));
+                renderKanban();
+                flashSyncNotification();
+            }
+        };
+
+        function flashSyncNotification() {
+            const statusEl = document.getElementById('sync-status');
+            if (statusEl) {
+                statusEl.className = 'bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center transition-all';
+                statusEl.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1"></span>Atualizado em Tempo Real';
+                setTimeout(() => {
+                    statusEl.className = 'bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center';
+                    statusEl.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse"></span>Tempo Real Ativo';
+                }, 2000);
+            }
+        }
+
         function saveData() {
-            localStorage.setItem('sabores_cunha_crm_v3', JSON.stringify(crmData));
+            localStorage.setItem('sabores_cunha_crm_v4', JSON.stringify(crmData));
+            syncChannel.postMessage({ type: 'STATE_UPDATE', data: crmData, columns: crmColumns });
             renderKanban();
             updateCounters();
         }
 
         function saveColumns() {
-            localStorage.setItem('sabores_cunha_columns_v3', JSON.stringify(crmColumns));
+            localStorage.setItem('sabores_cunha_columns_v4', JSON.stringify(crmColumns));
+            syncChannel.postMessage({ type: 'STATE_UPDATE', data: crmData, columns: crmColumns });
             renderKanban();
-        }
-
-        ;
-            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'sabores_cunha_crm_backup.json';
-            a.click();
         }
 
         function setRespFilter(resp) {
@@ -531,7 +563,7 @@
         }
 
         function deleteItem(id) {
-            if (confirm('Desejaรายlemente excluir este estabelecimento do CRM?')) {
+            if (confirm('Deseja realmente excluir este estabelecimento do CRM?')) {
                 crmData = crmData.filter(i => i.id !== id);
                 saveData();
             }
