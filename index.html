@@ -268,8 +268,7 @@
             renderKanban();
         }
 
-        function exportData() {
-            const backup = { columns: crmColumns, data: crmData };
+        ;
             const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
