@@ -74,12 +74,7 @@
 
 
             <div class="flex items-center space-x-3 w-full lg:w-auto">
-                <select id="filter-eixo" onchange="renderKanban()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-600 w-full">
-                    <option value="">Todos os Eixos</option>
-                    <option value="Centro">Centro</option>
-                    <option value="Rodovia Guará-Cunha">Rodovia Guará-Cunha</option>
-                    <option value="Estrada Cunha-Paraty">Estrada Cunha-Paraty</option>
-                </select>
+
                 <button onclick="resetFilters()" class="text-slate-500 hover:text-slate-700 px-3 py-2 text-sm font-medium transition-colors whitespace-nowrap">
                     <i class="fa-solid fa-rotate-right mr-1.5"></i> Limpar
                 </button>
@@ -87,10 +82,10 @@
         </section>
 
         <!-- KANBAN BOARD CONTAINER -->
-        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start pb-6">
+        <section class="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 items-start pb-6 overflow-x-auto snap-x snap-mandatory">
             
             <!-- COLUMN 1: Em Prospecção -->
-            <div class="bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-260px)] border border-slate-300 shadow-inner">
+            <div class="bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] min-w-[280px] md:min-w-0 w-80 md:w-auto snap-center border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink">
                 <div class="flex items-center justify-between mb-3 px-1">
                     <div class="flex items-center space-x-2">
                         <span class="w-3 h-3 rounded-full bg-amber-500"></span>
@@ -102,7 +97,7 @@
             </div>
 
             <!-- COLUMN 2: Qualificado -->
-            <div class="bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-260px)] border border-slate-300 shadow-inner">
+            <div class="bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] min-w-[280px] md:min-w-0 w-80 md:w-auto snap-center border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink">
                 <div class="flex items-center justify-between mb-3 px-1">
                     <div class="flex items-center space-x-2">
                         <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
@@ -114,7 +109,7 @@
             </div>
 
             <!-- COLUMN 3: Reunião Agendada -->
-            <div class="bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-260px)] border border-slate-300 shadow-inner">
+            <div class="bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] min-w-[280px] md:min-w-0 w-80 md:w-auto snap-center border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink">
                 <div class="flex items-center justify-between mb-3 px-1">
                     <div class="flex items-center space-x-2">
                         <span class="w-3 h-3 rounded-full bg-blue-500"></span>
@@ -126,7 +121,7 @@
             </div>
 
             <!-- COLUMN 4: Fechado -->
-            <div class="bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-260px)] border border-slate-300 shadow-inner">
+            <div class="bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] min-w-[280px] md:min-w-0 w-80 md:w-auto snap-center border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink">
                 <div class="flex items-center justify-between mb-3 px-1">
                     <div class="flex items-center space-x-2">
                         <span class="w-3 h-3 rounded-full bg-indigo-500"></span>
@@ -302,14 +297,14 @@
 
         function renderKanban() {
             const query = document.getElementById('search-input').value.toLowerCase();
-            const eixoFilter = document.getElementById('filter-eixo').value;
+            
 
             const filtered = crmData.filter(item => {
                 const matchQuery = item.name.toLowerCase().includes(query) || 
                                    (item.cuisine && item.cuisine.toLowerCase().includes(query)) || 
                                    (item.contact && item.contact.toLowerCase().includes(query));
                 const matchResp = currentRespFilter === '' || item.responsavel === currentRespFilter;
-                const matchEixo = eixoFilter === '' || item.eixo === eixoFilter;
+                
                 return matchQuery && matchResp && matchEixo;
             });
 
@@ -409,7 +404,7 @@
 
         function resetFilters() {
             document.getElementById('search-input').value = '';
-            document.getElementById('filter-eixo').value = '';
+            
             setRespFilter('');
         }
 
