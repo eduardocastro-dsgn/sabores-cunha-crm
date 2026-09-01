@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
-        function openProposalModal() {
+        /* removed */
             const modal = document.getElementById('modal-proposal');
             if (modal) {
                 modal.classList.remove('hidden');
@@ -23,13 +23,13 @@
                 alert('Modal de proposta não encontrado.');
             }
         }
-        function closeProposalModal() {
+        /* removed */
             const modal = document.getElementById('modal-proposal');
             if (modal) {
                 modal.classList.add('hidden');
             }
         }
-        function copyProposalText() {
+        /* removed */
             const text = "Movimento Sabores de Cunha
 - Propósito: Unificar a gastronomia de Cunha como um destino único.
 - Os 4 Pilares: Comunidade, Experiências, Comunicação e Desenvolvimento.
@@ -41,84 +41,7 @@
     </script>
 
     
-    <!-- MODAL (APRESENTAÇÃO OFICIAL - SABORES DE CUNHA) -->
-    <div id="modal-proposal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 hidden">
-        <div class="bg-slate-900 text-slate-100 rounded-3xl max-w-4xl w-full p-6 sm:p-10 shadow-2xl border border-slate-800 transform transition-all max-h-[95vh] overflow-y-auto relative">
-            
-            <!-- HEADER / CONTROLS -->
-            <div class="flex items-center justify-between pb-6 border-b border-slate-800 mb-6">
-                <div>
-                    <span class="text-xs uppercase tracking-widest text-emerald-400 font-bold block mb-1">Apresentação Oficial</span>
-                    <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">Um Movimento Pela Gastronomia de Cunha</h2>
-                </div>
-                <button onclick="closeProposalModal()" class="w-10 h-10 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <!-- SLIDES CONTAINER -->
-            <div id="deck-slides" class="space-y-12">
-                
-                <!-- SLIDE 1: MANIFESTO -->
-                <div class="bg-slate-800/60 border border-slate-700/60 p-6 sm:p-8 rounded-2xl relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-6 opacity-10 text-emerald-400 text-7xl font-black">01</div>
-                    <span class="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-2 block">O Manifesto</span>
-                    <h3 class="text-2xl sm:text-3xl font-bold text-white mb-4">Uma cidade. Muitos sabores. Um só destino.</h3>
-                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
-                        Estamos unindo restaurantes, cafés, bistrôs, produtores e fornecedores para transformar Cunha em um destino gastronômico reconhecido e unificado.
-                    </p>
-                </div>
-
-                <!-- SLIDE 2: O CENÁRIO E O PROBLEMA -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-slate-800/60 border border-slate-700/60 p-6 rounded-2xl">
-                        <span class="text-xs font-bold uppercase tracking-widest text-amber-400 mb-2 block">O Cenário</span>
-                        <h4 class="text-lg font-bold text-white mb-2">O que já temos</h4>
-                        <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                            Restaurantes, cafés, bistrôs, queijarias e fornecedores extraordinários. A qualidade e o talento já estão presentes em cada esquina de Cunha.
-                        </p>
-                    </div>
-                    <div class="bg-slate-800/60 border border-slate-700/60 p-6 rounded-2xl">
-                        <span class="text-xs font-bold uppercase tracking-widest text-rose-400 mb-2 block">O Problema</span>
-                        <h4 class="text-lg font-bold text-white mb-2">Cada negócio comunica sozinho</h4>
-                        <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                            Enquanto cada estabelecimento tenta atrair visitantes por conta própria, o turista enxerga apenas fragmentos. A oportunidade está em apresentar a cidade inteira como experiência.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- SLIDE 3: A VISÃO -->
-                <div class="bg-gradient-to-r from-emerald-950 to-emerald-900 border border-emerald-800 p-6 sm:p-8 rounded-2xl text-center">
-                    <span class="text-xs font-bold uppercase tracking-widest text-emerald-300 mb-2 block">Nossa Visão</span>
-                    <h3 class="text-xl sm:text-2xl font-black text-white mb-2">Fazer alguém acordar e dizer:</h3>
-                    <div class="inline-block bg-emerald-800/80 border border-emerald-600 px-6 py-3 rounded-xl my-3">
-                        <p class="text-lg sm:text-xl font-bold text-emerald-200">"Vamos passar o fim de semana em Cunha para comer bem?"</p>
-                    </div>
-                    <p class="text-xs text-emerald-300 uppercase tracking-widest font-semibold mt-2">O poder do coletivo: todos ganham.</p>
-                </div>
-
-                <!-- SLIDE 4: OS 4 PILARES -->
-                <div>
-                    <span class="text-xs font-bold uppercase tracking-widest text-indigo-400 mb-3 block">Como Fazemos (Os 4 Pilares)</span>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="bg-slate-800/60 border border-slate-700/60 p-5 rounded-xl">
-                            <span class="text-emerald-400 font-bold text-sm block mb-1">01 ✣ Comunidade</span>
-                            <p class="text-slate-300 text-xs">Encontros mensais, trocas reais, parcerias e decisões compartilhadas entre quem movimenta a gastronomia.</p>
-                        </div>
-                        <div class="bg-slate-800/60 border border-slate-700/60 p-5 rounded-xl">
-                            <span class="text-emerald-400 font-bold text-sm block mb-1">02 ✦ Experiências</span>
-                            <p class="text-slate-300 text-xs">Festivais, semanas temáticas, roteiros e encontros que criam novos motivos para visitar Cunha o ano todo.</p>
-                        </div>
-                        <div class="bg-slate-800/60 border border-slate-700/60 p-5 rounded-xl">
-                            <span class="text-emerald-400 font-bold text-sm block mb-1">03 ◉ Comunicação</span>
-                            <p class="text-slate-300 text-xs">Presença editorial forte para apresentar Cunha como experiência: conteúdo, calendário, histórias e divulgação da rede.</p>
-                        </div>
-                        <div class="bg-slate-800/60 border border-slate-700/60 p-5 rounded-xl">
-                            <span class="text-emerald-400 font-bold text-sm block mb-1">04 ↗ Desenvolvimento</span>
-                            <p class="text-slate-300 text-xs">Capacitações, imprensa, parcerias, patrocínios e representatividade construídos passo a passo.</p>
-                        </div>
-                    </div>
-                </div>
+    
 
                 <!-- SLIDE 5: BENEFÍCIOS -->
                 <div class="bg-slate-800/60 border border-slate-700/60 p-6 sm:p-8 rounded-2xl">
@@ -194,7 +117,7 @@
     </div>
 
     <script>
-        function openProposalModal() {
+        /* removed */
             const modal = document.getElementById('modal-proposal');
             if (modal) {
                 modal.classList.remove('hidden');
@@ -202,13 +125,13 @@
                 alert('Erro: Modal não encontrado no DOM.');
             }
         }
-        function closeProposalModal() {
+        /* removed */
             const modal = document.getElementById('modal-proposal');
             if (modal) {
                 modal.classList.add('hidden');
             }
         }
-        function copyProposalText() {
+        /* removed */
             const text = "Movimento Sabores de Cunha\n- Propósito: Unificar a gastronomia de Cunha como um destino único.\n- Os 4 Pilares: Comunidade, Experiências, Comunicação e Desenvolvimento.\n- Investimento de Adesão: R$ 300/mês para construção coletiva da rede.\n- Convite: Estamos procurando parceiros que acreditam no futuro da gastronomia local.";
             navigator.clipboard.writeText(text);
             alert('Resumo oficial da proposta copiado para a área de transferência!');
