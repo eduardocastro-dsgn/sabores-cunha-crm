@@ -28,6 +28,22 @@
         .kanban-col::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
         .kanban-col::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         .dragging { opacity: 0.5; transform: scale(0.98); }
+        
+        /* Mobile Kanban Peek Effect (mostra um pedaço da próxima coluna na lateral) */
+        @media (max-width: 768px) {
+            .kanban-container {
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                padding-right: 2rem;
+                -webkit-overflow-scrolling: touch;
+            }
+            .kanban-card-col {
+                scroll-snap-align: start;
+                flex: 0 0 82vw;
+                max-width: 82vw;
+            }
+        }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
@@ -82,10 +98,10 @@
         </section>
 
         <!-- KANBAN BOARD CONTAINER -->
-        <section class="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 items-start pb-6 overflow-x-auto snap-x snap-mandatory">
+        <section class="kanban-container flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 items-start pb-6">
             
             <!-- COLUMN 1: Em Prospecção -->
-            <div class="bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] min-w-[280px] md:min-w-0 w-80 md:w-auto snap-center border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink">
+            <div kanban-card-col bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink>
                 <div class="flex items-center justify-between mb-3 px-1">
                     <div class="flex items-center space-x-2">
                         <span class="w-3 h-3 rounded-full bg-amber-500"></span>
@@ -97,7 +113,7 @@
             </div>
 
             <!-- COLUMN 2: Qualificado -->
-            <div class="bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] min-w-[280px] md:min-w-0 w-80 md:w-auto snap-center border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink">
+            <div kanban-card-col bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink>
                 <div class="flex items-center justify-between mb-3 px-1">
                     <div class="flex items-center space-x-2">
                         <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
@@ -109,7 +125,7 @@
             </div>
 
             <!-- COLUMN 3: Reunião Agendada -->
-            <div class="bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] min-w-[280px] md:min-w-0 w-80 md:w-auto snap-center border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink">
+            <div kanban-card-col bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink>
                 <div class="flex items-center justify-between mb-3 px-1">
                     <div class="flex items-center space-x-2">
                         <span class="w-3 h-3 rounded-full bg-blue-500"></span>
@@ -121,7 +137,7 @@
             </div>
 
             <!-- COLUMN 4: Fechado -->
-            <div class="bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] min-w-[280px] md:min-w-0 w-80 md:w-auto snap-center border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink">
+            <div kanban-card-col bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink>
                 <div class="flex items-center justify-between mb-3 px-1">
                     <div class="flex items-center space-x-2">
                         <span class="w-3 h-3 rounded-full bg-indigo-500"></span>
