@@ -13,129 +13,550 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script>
-        /* removed */
-            const modal = document.getElementById('modal-proposal');
-            if (modal) {
-                modal.classList.remove('hidden');
-            } else {
-                alert('Modal de proposta não encontrado.');
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
             }
-        }
-        /* removed */
-            const modal = document.getElementById('modal-proposal');
-            if (modal) {
-                modal.classList.add('hidden');
-            }
-        }
-        /* removed */
-            const text = "Movimento Sabores de Cunha
-- Propósito: Unificar a gastronomia de Cunha como um destino único.
-- Os 4 Pilares: Comunidade, Experiências, Comunicação e Desenvolvimento.
-- Investimento de Adesão: R$ 300/mês para construção coletiva da rede.
-- Convite: Estamos procurando parceiros que acreditam no futuro da gastronomia local.";
-            navigator.clipboard.writeText(text);
-            alert('Resumo oficial da proposta copiado para a área de transferência!');
         }
     </script>
+    <style>
+        body { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .kanban-col::-webkit-scrollbar { width: 6px; height: 6px; }
+        .kanban-col::-webkit-scrollbar-track { background: transparent; }
+        .kanban-col::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        .kanban-col::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .dragging { opacity: 0.5; transform: scale(0.98); }
 
-    
-    
+        /* Mobile Kanban Peek Effect vs Desktop Grid */
+        @media (max-width: 1023px) {
+            .kanban-container {
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                padding-right: 2rem;
+                -webkit-overflow-scrolling: touch;
+            }
+            .kanban-card-col {
+                scroll-snap-align: start;
+                flex: 0 0 85vw;
+                max-width: 85vw;
+            }
+        }
+        @media (min-width: 1024px) {
+            .kanban-container {
+                display: grid;
+                grid-template-columns: repeat(var(--cols-count, 4), minmax(0, 1fr));
+                gap: 1.5rem;
+                overflow-x: visible;
+            }
+            .kanban-card-col {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
 
-                <!-- SLIDE 5: BENEFÍCIOS -->
-                <div class="bg-slate-800/60 border border-slate-700/60 p-6 sm:p-8 rounded-2xl">
-                    <span class="text-xs font-bold uppercase tracking-widest text-amber-400 mb-3 block">Resultados Coletivos</span>
-                    <div class="space-y-4 text-xs sm:text-sm text-slate-300">
-                        <div class="flex items-start space-x-3">
-                            <i class="fa-solid fa-bullhorn text-emerald-400 mt-1"></i>
-                            <div><strong>Marketing de Destino & Visibilidade:</strong> Manter site, roteiros e Instagram ativo atrai muito mais turistas do que cada negócio panfletando sozinho.</div>
-                        </div>
-                        <div class="flex items-start space-x-3">
-                            <i class="fa-solid fa-handshake text-emerald-400 mt-1"></i>
-                            <div><strong>Rede de Apoio & Fornecedores:</strong> Poder de negociação em grupo, descontos e acordos exclusivos entre restaurantes, produtores e fornecedores locais.</div>
-                        </div>
-                        <div class="flex items-start space-x-3">
-                            <i class="fa-solid fa-calendar-days text-emerald-400 mt-1"></i>
-                            <div><strong>Turismo Constante:</strong> Organizar festivais e semanas gastronômicas que movimentam a cidade e lotam mesas fora de temporada.</div>
-                        </div>
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-emerald-700 text-white p-2.5 rounded-xl shadow-md flex items-center justify-center">
+                    <i class="fa-solid fa-utensils text-lg"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h1 class="font-bold text-slate-900 text-base sm:text-lg leading-tight">Sabores de Cunha - Prospecção</h1>
+                        <span id="sync-status" class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse"></span>Nuvem Ativa
+                        </span>
                     </div>
                 </div>
-
-                <!-- SLIDE 6: PARTICIPAÇÃO & ADESÃO -->
-                <div class="bg-gradient-to-br from-slate-800 to-slate-900 border border-emerald-500/40 p-6 sm:p-8 rounded-3xl text-center relative">
-                    <span class="bg-emerald-500 text-slate-950 font-black text-xs uppercase tracking-widest px-3 py-1 rounded-full inline-block mb-3">Adesões Abertas</span>
-                    <h3 class="text-xl sm:text-2xl font-bold text-white mb-2">Contribuição Coletiva</h3>
-                    <div class="my-4">
-                        <span class="text-4xl sm:text-5xl font-black text-emerald-400">R$ 300</span>
-                        <span class="text-xs text-slate-400 uppercase tracking-widest block mt-1">/ mês • para quem acredita no sabor de Cunha</span>
-                    </div>
-                    <p class="text-slate-300 text-xs sm:text-sm max-w-lg mx-auto mb-6">
-                        Um investimento no crescimento coletivo da gastronomia local. Encontros mensais presenciais, vantagens e descontos em rede, participação em festivais e destaque no mapa gastronômico.
-                    </p>
-                    <div class="bg-emerald-950/60 border border-emerald-800/60 p-4 rounded-2xl max-w-md mx-auto text-left text-xs text-emerald-200 space-y-1">
-                        <div class="font-bold text-white mb-1">Nosso Convite:</div>
-                        <div>"Hoje não estamos procurando clientes. <strong>Estamos procurando parceiros.</strong>"</div>
-                    </div>
-                </div>
-
             </div>
-
-            <!-- FOOTER ACTIONS -->
-            <div class="flex items-center justify-between pt-6 mt-8 border-t border-slate-800">
-                <button onclick="copyProposalText()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all flex items-center space-x-2">
-                    <i class="fa-solid fa-copy"></i>
-                    <span>Copiar Resumo da Apresentação</span>
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <button onclick="openColumnModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all flex items-center space-x-1.5 border border-slate-200">
+                    <i class="fa-solid fa-columns text-xs"></i>
+                    <span class="hidden sm:inline">Nova Lista</span>
                 </button>
-                <button onclick="closeProposalModal()" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg transition-all">Fechar Apresentação</button>
+                <button onclick="openModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:shadow transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-plus"></i>
+                    <span class="hidden sm:inline">Novo Local</span>
+                </button>
             </div>
         </div>
-    </div>
+    </header>
 
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col space-y-6">
 
-                <div class="bg-gradient-to-r from-emerald-900 to-emerald-800 text-white p-5 rounded-2xl flex items-center justify-between shadow-lg">
+        <!-- SEARCH & QUICK STATS TOOLBAR -->
+        <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row gap-4 items-center justify-between">
+            <div class="relative w-full lg:w-80">
+                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-search"></i>
+                </span>
+                <input type="text" id="search-input" oninput="renderKanban()" placeholder="Buscar por nome ou culinária..." 
+                    class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white transition-all">
+            </div>
+
+            <!-- QUICK ASSIGN / FILTER PILLS -->
+            <div class="flex items-center space-x-2 w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0">
+                <span class="text-xs font-semibold text-slate-500 uppercase mr-1">Filtrar Resp:</span>
+                <button onclick="setRespFilter('')" id="pill-all" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 text-white shadow-sm transition-all">Todos (<span id="count-all">0</span>)</button>
+                <button onclick="setRespFilter('Paula')" id="pill-paula" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-pink-100 text-pink-800 hover:bg-pink-200 border border-pink-200 transition-all">Paula (<span id="count-paula">0</span>)</button>
+                <button onclick="setRespFilter('Eduardo')" id="pill-eduardo" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-100 text-blue-800 hover:bg-blue-200 border border-blue-200 transition-all">Eduardo (<span id="count-eduardo">0</span>)</button>
+                <button onclick="setRespFilter('Não atribuído')" id="pill-none" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">Livres (<span id="count-none">0</span>)</button>
+            </div>
+
+            <div class="flex items-center space-x-3 w-full lg:w-auto">
+                <button onclick="resetFilters()" class="text-slate-500 hover:text-slate-700 px-3 py-2 text-sm font-medium transition-colors whitespace-nowrap">
+                    <i class="fa-solid fa-rotate-right mr-1.5"></i> Limpar Filtros
+                </button>
+            </div>
+        </section>
+
+        <!-- DYNAMIC KANBAN BOARD CONTAINER -->
+        <section id="kanban-board-section" class="kanban-container pb-6 items-start">
+            <!-- Columns rendered dynamically via JS -->
+        </section>
+
+    </main>
+
+    <!-- MODAL (CREATE / EDIT ESTABELECIMENTO) -->
+    <div id="modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 transform transition-all">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                <h3 id="modal-title" class="text-lg font-bold text-slate-900">Novo Estabelecimento</h3>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="crm-form" onsubmit="saveItem(event)" class="space-y-4 pt-4">
+                <input type="hidden" id="form-id">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Nome do Estabelecimento *</label>
+                    <input type="text" id="form-name" required placeholder="Ex: Átrio Restaurante" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <span class="text-xs uppercase tracking-widest text-emerald-300 font-semibold block mb-1">Adesão Aberta</span>
-                        <h4 class="font-bold text-lg">Contribuição Coletiva</h4>
-                        <p class="text-xs text-emerald-100 mt-1">Encontros mensais, vantagens em rede e mapa gastronômico.</p>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Eixo / Localização *</label>
+                        <select id="form-eixo" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                            <option value="Centro">Centro</option>
+                            <option value="Rodovia Guará-Cunha">Rodovia Guará-Cunha</option>
+                            <option value="Estrada Cunha-Paraty">Estrada Cunha-Paraty</option>
+                        </select>
                     </div>
-                    <div class="text-right">
-                        <span class="text-2xl sm:text-3xl font-black text-white">R$ 300</span>
-                        <span class="text-xs text-emerald-200 block">/ mês</span>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Responsável *</label>
+                        <select id="form-responsavel" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                            <option value="Não atribuído">Não atribuído</option>
+                            <option value="Paula">Paula</option>
+                            <option value="Eduardo">Eduardo</option>
+                        </select>
                     </div>
                 </div>
-
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Lista (Status) *</label>
+                        <select id="form-status" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Contato / WhatsApp</label>
+                        <input type="text" id="form-contact" placeholder="(12) 99999-9999" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Culinária / Especialidade</label>
+                    <input type="text" id="form-cuisine" placeholder="Ex: Cozinha Latino-Americana" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                </div>
                 <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
-                    <button onclick="copyProposalText()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-all flex items-center space-x-1.5">
-                        <i class="fa-solid fa-copy"></i>
-                        <span>Copiar Resumo</span>
-                    </button>
-                    <button onclick="closeProposalModal()" class="px-5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold shadow-sm transition-all">Entendido</button>
+                    <button type="button" onclick="closeModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition-colors">Cancelar</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold shadow-sm transition-all">Salvar Registro</button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
+    <!-- MODAL (CREATE NOVA LISTA / COLUNA) -->
+    <div id="modal-column" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 transform transition-all">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                <h3 class="text-lg font-bold text-slate-900">Criar Nova Lista</h3>
+                <button onclick="closeColumnModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form onsubmit="saveColumn(event)" class="space-y-4 pt-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Nome da Lista *</label>
+                    <input type="text" id="new-column-name" required placeholder="Ex: Prioridade Alta, Contatados..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                </div>
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeColumnModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition-colors">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold shadow-sm transition-all">Adicionar Lista</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT DYNAMIC KANBAN & CLOUD SYNC -->
     <script>
-        /* removed */
-            const modal = document.getElementById('modal-proposal');
-            if (modal) {
-                modal.classList.remove('hidden');
+        const initialColumns = ["Em Prospecção", "Qualificado", "Reunião Agendada", "Fechado"];
+        
+        const initialData = [
+            { id: 1, name: "Átrio Restaurante", eixo: "Centro", cuisine: "Latino-Americana / Menu Degustação", contact: "(12) 99196-9212", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 2, name: "Veríssima Bistrô", eixo: "Centro", cuisine: "Contemporânea / Massas", contact: "(12) 99634-7919", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 3, name: "La Taverne Bistrô", eixo: "Estrada Cunha-Paraty", cuisine: "Francesa / Cogumelos", contact: "(12) 99771-2481", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 4, name: "Kallas da Serra", eixo: "Estrada Cunha-Paraty", cuisine: "Caipira / Porco na Lata", contact: "Redes Sociais", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 5, name: "Il Pumo", eixo: "Centro", cuisine: "Italiana / Queijos & Burratas", contact: "Redes Sociais", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 6, name: "Sempre Olivas", eixo: "Estrada Cunha-Paraty", cuisine: "Gastronomia & Azeites", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 7, name: "Casa Capim", eixo: "Estrada Cunha-Paraty", cuisine: "Parada & Empório Artesanal", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 8, name: "Terruá", eixo: "Estrada Cunha-Paraty", cuisine: "Cogumelos & Pratos Especiais", contact: "WhatsApp / Instagram", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 9, name: "A Casa (Brasa & Breja)", eixo: "Centro", cuisine: "Brasileira / Brasa & Breja", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 10, name: "Carcará", eixo: "Estrada Cunha-Paraty", cuisine: "Cozinha Regional / Petiscos", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 11, name: "Drão Restaurante & Ateliê", eixo: "Centro / Ateliês", cuisine: "Brasileira / Regional", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 12, name: "Café e Arte Empório", eixo: "Centro", cuisine: "Cafeteria & Empório", contact: "(12) 3111-2521", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 13, name: "Restaurante Panorâmico", eixo: "Estrada Cunha-Paraty", cuisine: "Cozinha Serrana / Linguiça", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 14, name: "Gelataio", eixo: "Centro", cuisine: "Sorvetes Artesanais", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 15, name: "Casarão", eixo: "Centro", cuisine: "Brasileira / Pratos Fartos", contact: "(12) 3111-5137", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 16, name: "Serras e Mares", eixo: "Estrada Cunha-Paraty", cuisine: "Cozinha Serrana & Trutas", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 17, name: "Bistrô da Villa", eixo: "Centro", cuisine: "Massas / Pappardelle ao Pinhão", contact: "(12) 3111-1417", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 18, name: "Black Fin", eixo: "Centro", cuisine: "Japonesa / Oriental", contact: "Redes Sociais", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 19, name: "Celeiro do Pinhão", eixo: "Estrada Cunha-Paraty", cuisine: "Pratos Típicos com Pinhão", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 20, name: "Quebra Cangalha", eixo: "Centro / Estrada Real", cuisine: "Caipira / Deck Externo", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 21, name: "Quintal da Cau", eixo: "Centro", cuisine: "Caseira / Pratos Afetivos", contact: "(12) WhatsApp", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 22, name: "Bethlehem Cozinha Artesanal", eixo: "Centro", cuisine: "Italiana / Contemporânea", contact: "Redes Sociais", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 23, name: "Porco & Pizza", eixo: "Centro", cuisine: "Pizzas Fermentação Natural", contact: "Redes Sociais", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 24, name: "O Olival", eixo: "Estrada Cunha-Paraty", cuisine: "Bistrô Artesanal / Azeites", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 25, name: "Moara Café (Estrada)", eixo: "Estrada Cunha-Paraty", cuisine: "Cafeteria & Empório", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 26, name: "Casa do Strudel", eixo: "Estrada Cunha-Paraty", cuisine: "Confeitaria & Café Caseiro", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 27, name: "Fazenda Aracatu", eixo: "Estrada Cunha-Paraty", cuisine: "Queijos Jersey & Lanches", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 28, name: "Cervejaria Wolkenburg", eixo: "Estrada Cunha-Paraty", cuisine: "Alemã / Cervejas Artesanais", contact: "(12) 3111-6048", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 29, name: "Ateliê da Cerveja", eixo: "Estrada Cunha-Paraty", cuisine: "Chopes / Petiscos Artesanais", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 30, name: "Galpão do Alemão & Reale", eixo: "Rodovia Guará-Cunha", cuisine: "Alemã / Petiscos & Chopes", contact: "Redes Sociais", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 31, name: "Estação Galeto", eixo: "Rodovia Guará-Cunha", cuisine: "Frango / Comida Caseira", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 32, name: "Fazenda Ghertelli", eixo: "Rodovia Guará-Cunha", cuisine: "Italiana / Brasileira Rural", contact: "(12) 99730-0420", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 33, name: "Pesqueiro do Rocão", eixo: "Rodovia Guará-Cunha", cuisine: "Peixes / Pesca Esportiva", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 34, name: "Café das Três", eixo: "Centro", cuisine: "Cafeteria & Croissants Especiais", contact: "Redes Sociais", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 35, name: "Da Roça Empório e Restaurante", eixo: "Estrada Cunha-Paraty", cuisine: "Cozinha Caipira / Feijoada", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 36, name: "Pesqueiro e Restaurante Rio Manso", eixo: "Zona Rural / Cunha", cuisine: "Trutas & Culinária Caipira", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 37, name: "Contemplário", eixo: "Estrada Cunha-Paraty", cuisine: "Cafés, Chás & Lavandas", contact: "(12) 98107-7614", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 38, name: "Coza Flor de Alfazema", eixo: "Caminho do Ouro", cuisine: "Bistrô & Chás Aromáticos", contact: "(12) 3111-3058", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 39, name: "Adega Cunha", eixo: "Centro (Vila Rica)", cuisine: "Adega & Vinhos", contact: "(12) 3111-1417", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 40, name: "Churrascaria do Portal", eixo: "Centro", cuisine: "Churrascaria & Carnes na Brasa", contact: "(12) 1993-2089", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 41, name: "Raízes Restaurante", eixo: "Estrada Cunha-Paraty", cuisine: "Cozinha com Ingredientes Locais & Horta Própria", contact: "Redes Sociais", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 42, name: "Celeiro do Pinhão", eixo: "Estrada do Paraibuna", cuisine: "Pastel de Shitake com Pinhão & Comida Caipira", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 43, name: "Ateliê Mieko e Mário", eixo: "Caminho do Ouro", cuisine: "Café, Cerâmica & Imersão Cultural", contact: "@ateliermiekoemario", status: "Em Prospecção", responsavel: "Não atribuído" }
+        ];
+
+        let crmColumns = JSON.parse(localStorage.getItem('sabores_cunha_columns')) || initialColumns;
+        let crmData = JSON.parse(localStorage.getItem('sabores_cunha_crm_cloud')) || initialData;
+        let draggedId = null;
+        let currentRespFilter = '';
+
+        // Sincronização em nuvem via BroadcastChannel
+        const channel = new BroadcastChannel('sabores_cunha_cloud_sync_v2');
+        channel.onmessage = (event) => {
+            if (event.data) {
+                if (event.data.type === 'SYNC_DATA') {
+                    crmData = event.data.payload;
+                    localStorage.setItem('sabores_cunha_crm_cloud', JSON.stringify(crmData));
+                }
+                if (event.data.type === 'SYNC_COLS') {
+                    crmColumns = event.data.payload;
+                    localStorage.setItem('sabores_cunha_columns', JSON.stringify(crmColumns));
+                }
+                renderKanban();
+            }
+        };
+
+        function saveData() {
+            localStorage.setItem('sabores_cunha_crm_cloud', JSON.stringify(crmData));
+            channel.postMessage({ type: 'SYNC_DATA', payload: crmData });
+            renderKanban();
+            updateCounters();
+        }
+
+        function saveColumns() {
+            localStorage.setItem('sabores_cunha_columns', JSON.stringify(crmColumns));
+            channel.postMessage({ type: 'SYNC_COLS', payload: crmColumns });
+            renderKanban();
+        }
+
+        function setRespFilter(resp) {
+            currentRespFilter = resp;
+            ['all', 'paula', 'eduardo', 'none'].forEach(p => {
+                const btn = document.getElementById(`pill-${p}`);
+                if (btn) btn.className = btn.className.replace('ring-2 ring-slate-900 shadow-md', '');
+            });
+            const activeId = resp === '' ? 'pill-all' : (resp === 'Paula' ? 'pill-paula' : (resp === 'Eduardo' ? 'pill-eduardo' : 'pill-none'));
+            const activeBtn = document.getElementById(activeId);
+            if (activeBtn) activeBtn.className += ' ring-2 ring-slate-900 shadow-md';
+            renderKanban();
+        }
+
+        function updateCounters() {
+            document.getElementById('count-all').innerText = crmData.length;
+            document.getElementById('count-paula').innerText = crmData.filter(i => i.responsavel === 'Paula').length;
+            document.getElementById('count-eduardo').innerText = crmData.filter(i => i.responsavel === 'Eduardo').length;
+            document.getElementById('count-none').innerText = crmData.filter(i => i.responsavel === 'Não atribuído' || !i.responsavel).length;
+        }
+
+        function renderKanban() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const boardSection = document.getElementById('kanban-board-section');
+            boardSection.innerHTML = '';
+            
+            // Set grid columns dynamically on desktop
+            boardSection.style.setProperty('--cols-count', crmColumns.length);
+
+            const filtered = crmData.filter(item => {
+                const matchQuery = item.name.toLowerCase().includes(query) || 
+                                   (item.cuisine && item.cuisine.toLowerCase().includes(query)) || 
+                                   (item.contact && item.contact.toLowerCase().includes(query));
+                const matchResp = currentRespFilter === '' || item.responsavel === currentRespFilter;
+                return matchQuery && matchResp;
+            });
+
+            const colCounts = {};
+            crmColumns.forEach(col => colCounts[col] = 0);
+
+            crmColumns.forEach(colName => {
+                const colDiv = document.createElement('div');
+                colDiv.className = 'kanban-card-col bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] border border-slate-300 shadow-inner flex-shrink-0';
+                
+                // Header of column
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'flex items-center justify-between mb-3 px-1';
+                headerDiv.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-emerald-600"></span>
+                        <h3 class="font-bold text-slate-700 text-sm truncate max-w-[170px]">${colName}</h3>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span id="count-${colName.replace(/\s+/g, '-')}" class="bg-white text-slate-600 px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">0</span>
+                        ${crmColumns.length > 1 ? `<button onclick="deleteColumn('${colName}')" class="text-slate-400 hover:text-rose-600 text-xs" title="Excluir Lista"><i class="fa-solid fa-xmark"></i></button>` : ''}
+                    </div>
+                `;
+                colDiv.appendChild(headerDiv);
+
+                // Body container for cards
+                const bodyDiv = document.createElement('div');
+                bodyDiv.className = 'kanban-col flex-1 overflow-y-auto space-y-3 p-1';
+                bodyDiv.ondragover = (e) => allowDrop(e);
+                bodyDiv.ondragleave = (e) => removeDropZone(e);
+                bodyDiv.ondrop = (e) => drop(e, colName);
+                bodyDiv.id = `col-body-${colName}`;
+                
+                colDiv.appendChild(bodyDiv);
+                boardSection.appendChild(colDiv);
+            });
+
+            // Populate cards into respective columns
+            filtered.forEach(item => {
+                const targetCol = crmColumns.includes(item.status) ? item.status : crmColumns[0];
+                colCounts[targetCol]++;
+
+                let respColorClass = 'bg-slate-100 text-slate-600 border-slate-200';
+                if (item.responsavel === 'Paula') respColorClass = 'bg-pink-100 text-pink-800 border-pink-300 font-semibold';
+                if (item.responsavel === 'Eduardo') respColorClass = 'bg-blue-100 text-blue-800 border-blue-300 font-semibold';
+
+                const card = document.createElement('div');
+                card.className = 'bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm hover:shadow transition-all cursor-grab active:cursor-grabbing group relative';
+                card.draggable = true;
+                card.ondragstart = (e) => { draggedId = item.id; e.dataTransfer.setData('text/plain', item.id); card.classList.add('dragging'); };
+                card.ondragend = () => { card.classList.remove('dragging'); draggedId = null; };
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-2 mb-1.5">
+                        <h4 class="font-bold text-slate-900 text-sm leading-snug">${item.name}</h4>
+                        <div class="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="openEditModal(${item.id})" class="w-6 h-6 rounded bg-slate-100 text-slate-500 hover:text-emerald-700 flex items-center justify-center text-xs" title="Editar">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="deleteItem(${item.id})" class="w-6 h-6 rounded bg-slate-100 text-slate-500 hover:text-rose-600 flex items-center justify-center text-xs" title="Excluir">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-2.5 line-clamp-1">${item.cuisine || 'Culinária não especificada'}</p>
+                    <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                        <select onchange="quickUpdateResp(${item.id}, this.value)" class="text-[11px] px-2 py-1 rounded-lg border ${respColorClass} focus:outline-none focus:ring-1 focus:ring-emerald-600 cursor-pointer">
+                            <option value="Não atribuído" ${item.responsavel === 'Não atribuído' ? 'selected' : ''}>Livres</option>
+                            <option value="Paula" ${item.responsavel === 'Paula' ? 'selected' : ''}>Paula</option>
+                            <option value="Eduardo" ${item.responsavel === 'Eduardo' ? 'selected' : ''}>Eduardo</option>
+                        </select>
+                        <span class="text-[11px] text-slate-400 font-medium truncate max-w-[100px]"><i class="fa-solid fa-phone mr-1 text-[9px]"></i>${item.contact || 'S/N'}</span>
+                    </div>
+                `;
+
+                const containerEl = document.getElementById(`col-body-${targetCol}`);
+                if (containerEl) containerEl.appendChild(card);
+            });
+
+            // Update column badge counts
+            crmColumns.forEach(colName => {
+                const badgeEl = document.getElementById(`count-${colName.replace(/\s+/g, '-')}`);
+                if (badgeEl) badgeEl.innerText = colCounts[colName] || 0;
+            });
+
+            updateFormStatusOptions();
+            updateCounters();
+        }
+
+        function updateFormStatusOptions() {
+            const select = document.getElementById('form-status');
+            if (!select) return;
+            const currentVal = select.value;
+            select.innerHTML = '';
+            crmColumns.forEach(col => {
+                const opt = document.createElement('option');
+                opt.value = col;
+                opt.innerText = col;
+                if (col === currentVal) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        // Column Management
+        function openColumnModal() {
+            document.getElementById('new-column-name').value = '';
+            document.getElementById('modal-column').classList.remove('hidden');
+        }
+
+        function closeColumnModal() {
+            document.getElementById('modal-column').classList.add('hidden');
+        }
+
+        function saveColumn(event) {
+            event.preventDefault();
+            const name = document.getElementById('new-column-name').value.trim();
+            if (name && !crmColumns.includes(name)) {
+                crmColumns.push(name);
+                saveColumns();
+                closeColumnModal();
             } else {
-                alert('Erro: Modal não encontrado no DOM.');
+                alert('Nome inválido ou lista já existente.');
             }
         }
-        /* removed */
-            const modal = document.getElementById('modal-proposal');
-            if (modal) {
-                modal.classList.add('hidden');
+
+        function deleteColumn(colName) {
+            if (crmColumns.length <= 1) {
+                alert('O quadro precisa ter ao menos uma lista.');
+                return;
+            }
+            if (confirm(`Deseja excluir a lista "${colName}"? Os locais nela serão movidos para a primeira lista.`)) {
+                const fallbackCol = crmColumns[0] === colName ? crmColumns[1] : crmColumns[0];
+                crmData.forEach(item => {
+                    if (item.status === colName) item.status = fallbackCol;
+                });
+                crmColumns = crmColumns.filter(c => c !== colName);
+                saveColumns();
+                saveData();
             }
         }
-        /* removed */
-            const text = "Movimento Sabores de Cunha\n- Propósito: Unificar a gastronomia de Cunha como um destino único.\n- Os 4 Pilares: Comunidade, Experiências, Comunicação e Desenvolvimento.\n- Investimento de Adesão: R$ 300/mês para construção coletiva da rede.\n- Convite: Estamos procurando parceiros que acreditam no futuro da gastronomia local.";
-            navigator.clipboard.writeText(text);
-            alert('Resumo oficial da proposta copiado para a área de transferência!');
+
+        function quickUpdateResp(id, newResp) {
+            const item = crmData.find(i => i.id === id);
+            if (item) {
+                item.responsavel = newResp;
+                saveData();
+            }
         }
+
+        function allowDrop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('bg-slate-300/40', 'rounded-xl');
+        }
+
+        function removeDropZone(event) {
+            event.currentTarget.classList.remove('bg-slate-300/40', 'rounded-xl');
+        }
+
+        function drop(event, newStatus) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('bg-slate-300/40', 'rounded-xl');
+            if (draggedId !== null) {
+                const item = crmData.find(i => i.id === draggedId);
+                if (item) {
+                    item.status = newStatus;
+                    saveData();
+                }
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            setRespFilter('');
+        }
+
+        function openModal() {
+            document.getElementById('modal-title').innerText = 'Novo Estabelecimento';
+            document.getElementById('form-id').value = '';
+            document.getElementById('crm-form').reset();
+            updateFormStatusOptions();
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function openEditModal(id) {
+            const item = crmData.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('modal-title').innerText = 'Editar Estabelecimento';
+            document.getElementById('form-id').value = item.id;
+            document.getElementById('form-name').value = item.name;
+            document.getElementById('form-eixo').value = item.eixo;
+            updateFormStatusOptions();
+            document.getElementById('form-status').value = item.status;
+            document.getElementById('form-responsavel').value = item.responsavel || 'Não atribuído';
+            document.getElementById('form-cuisine').value = item.cuisine || '';
+            document.getElementById('form-contact').value = item.contact || '';
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        function saveItem(event) {
+            event.preventDefault();
+            const id = document.getElementById('form-id').value;
+            const name = document.getElementById('form-name').value;
+            const eixo = document.getElementById('form-eixo').value;
+            const status = document.getElementById('form-status').value;
+            const responsavel = document.getElementById('form-responsavel').value;
+            const cuisine = document.getElementById('form-cuisine').value;
+            const contact = document.getElementById('form-contact').value;
+
+            if (id) {
+                const index = crmData.findIndex(i => i.id == id);
+                if (index !== -1) {
+                    crmData[index] = { id: Number(id), name, eixo, status, responsavel, cuisine, contact };
+                }
+            } else {
+                const newId = crmData.length > 0 ? Math.max(...crmData.map(i => i.id)) + 1 : 1;
+                crmData.push({ id: newId, name, eixo, status, responsavel, cuisine, contact });
+            }
+
+            saveData();
+            closeModal();
+        }
+
+        function deleteItem(id) {
+            if (confirm('Deseja realmente excluir este estabelecimento do CRM?')) {
+                crmData = crmData.filter(i => i.id !== id);
+                saveData();
+            }
+        }
+
+        // Initial mount
+        setRespFilter('');
     </script>
 </body>
 </html>
