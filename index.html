@@ -71,14 +71,7 @@
                     class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white transition-all">
             </div>
 
-            <!-- QUICK ASSIGN / FILTER PILLS -->
-            <div class="flex items-center space-x-2 w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0">
-                <span class="text-xs font-semibold text-slate-500 uppercase mr-1">Filtrar Resp:</span>
-                <button onclick="setRespFilter('')" id="pill-all" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 text-white shadow-sm transition-all">Todos (<span id="count-all">0</span>)</button>
-                <button onclick="setRespFilter('Paula')" id="pill-paula" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-pink-100 text-pink-800 hover:bg-pink-200 border border-pink-200 transition-all">Paula (<span id="count-paula">0</span>)</button>
-                <button onclick="setRespFilter('Eduardo')" id="pill-eduardo" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-100 text-blue-800 hover:bg-blue-200 border border-blue-200 transition-all">Eduardo (<span id="count-eduardo">0</span>)</button>
-                <button onclick="setRespFilter('Não atribuído')" id="pill-none" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">Livres (<span id="count-none">0</span>)</button>
-            </div>
+
 
             <div class="flex items-center space-x-3 w-full lg:w-auto">
                 <select id="filter-eixo" onchange="renderKanban()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-600 w-full">
