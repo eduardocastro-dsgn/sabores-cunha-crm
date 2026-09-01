@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sabores de Cunha - Prospecção (Cloud)</title>
+    <title>Sabores de Cunha - Prospecção</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Supabase JS SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -28,9 +26,9 @@
         .kanban-col::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
         .kanban-col::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         .dragging { opacity: 0.5; transform: scale(0.98); }
-        
-        /* Mobile Kanban Peek Effect (mostra um pedaço da próxima coluna na lateral) */
-        @media (max-width: 768px) {
+
+        /* Mobile Kanban Peek Effect vs Desktop Grid */
+        @media (max-width: 1023px) {
             .kanban-container {
                 display: flex;
                 overflow-x: auto;
@@ -40,8 +38,20 @@
             }
             .kanban-card-col {
                 scroll-snap-align: start;
-                flex: 0 0 82vw;
-                max-width: 82vw;
+                flex: 0 0 85vw;
+                max-width: 85vw;
+            }
+        }
+        @media (min-width: 1024px) {
+            .kanban-container {
+                display: grid;
+                grid-template-columns: repeat(var(--cols-count, 4), minmax(0, 1fr));
+                gap: 1.5rem;
+                overflow-x: visible;
+            }
+            .kanban-card-col {
+                width: 100%;
+                max-width: 100%;
             }
         }
     </style>
@@ -62,13 +72,16 @@
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse"></span>Nuvem Ativa
                         </span>
                     </div>
-                    
                 </div>
             </div>
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <button onclick="openColumnModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all flex items-center space-x-1.5 border border-slate-200">
+                    <i class="fa-solid fa-columns text-xs"></i>
+                    <span class="hidden sm:inline">Nova Lista</span>
+                </button>
                 <button onclick="openModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:shadow transition-all flex items-center space-x-2">
                     <i class="fa-solid fa-plus"></i>
-                    <span class="hidden sm:inline">Novo Estabelecimento</span>
+                    <span class="hidden sm:inline">Novo Local</span>
                 </button>
             </div>
         </div>
@@ -77,7 +90,7 @@
     <!-- MAIN CONTENT CONTAINER -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col space-y-6">
 
-        <!-- SEARCH, QUICK STATS & FILTERS TOOLBAR -->
+        <!-- SEARCH & QUICK STATS TOOLBAR -->
         <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row gap-4 items-center justify-between">
             <div class="relative w-full lg:w-80">
                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -87,72 +100,30 @@
                     class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white transition-all">
             </div>
 
-
+            <!-- QUICK ASSIGN / FILTER PILLS -->
+            <div class="flex items-center space-x-2 w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0">
+                <span class="text-xs font-semibold text-slate-500 uppercase mr-1">Filtrar Resp:</span>
+                <button onclick="setRespFilter('')" id="pill-all" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 text-white shadow-sm transition-all">Todos (<span id="count-all">0</span>)</button>
+                <button onclick="setRespFilter('Paula')" id="pill-paula" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-pink-100 text-pink-800 hover:bg-pink-200 border border-pink-200 transition-all">Paula (<span id="count-paula">0</span>)</button>
+                <button onclick="setRespFilter('Eduardo')" id="pill-eduardo" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-100 text-blue-800 hover:bg-blue-200 border border-blue-200 transition-all">Eduardo (<span id="count-eduardo">0</span>)</button>
+                <button onclick="setRespFilter('Não atribuído')" id="pill-none" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">Livres (<span id="count-none">0</span>)</button>
+            </div>
 
             <div class="flex items-center space-x-3 w-full lg:w-auto">
-
                 <button onclick="resetFilters()" class="text-slate-500 hover:text-slate-700 px-3 py-2 text-sm font-medium transition-colors whitespace-nowrap">
-                    <i class="fa-solid fa-rotate-right mr-1.5"></i> Limpar
+                    <i class="fa-solid fa-rotate-right mr-1.5"></i> Limpar Filtros
                 </button>
             </div>
         </section>
 
-        <!-- KANBAN BOARD CONTAINER -->
-        <section class="kanban-container flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 items-start pb-6">
-            
-            <!-- COLUMN 1: Em Prospecção -->
-            <div kanban-card-col bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink>
-                <div class="flex items-center justify-between mb-3 px-1">
-                    <div class="flex items-center space-x-2">
-                        <span class="w-3 h-3 rounded-full bg-amber-500"></span>
-                        <h3 class="font-bold text-slate-700 text-sm">Em Prospecção</h3>
-                    </div>
-                    <span id="col-count-prospeccao" class="bg-white text-slate-600 px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">0</span>
-                </div>
-                <div id="col-prospeccao" class="kanban-col flex-1 overflow-y-auto space-y-3 p-1" ondragover="allowDrop(event)" ondragleave="removeDropZone(event)" ondrop="drop(event, 'Em Prospecção')"></div>
-            </div>
-
-            <!-- COLUMN 2: Qualificado -->
-            <div kanban-card-col bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink>
-                <div class="flex items-center justify-between mb-3 px-1">
-                    <div class="flex items-center space-x-2">
-                        <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-                        <h3 class="font-bold text-slate-700 text-sm">Qualificado</h3>
-                    </div>
-                    <span id="col-count-qualificado" class="bg-white text-slate-600 px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">0</span>
-                </div>
-                <div id="col-qualificado" class="kanban-col flex-1 overflow-y-auto space-y-3 p-1" ondragover="allowDrop(event)" ondragleave="removeDropZone(event)" ondrop="drop(event, 'Qualificado')"></div>
-            </div>
-
-            <!-- COLUMN 3: Reunião Agendada -->
-            <div kanban-card-col bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink>
-                <div class="flex items-center justify-between mb-3 px-1">
-                    <div class="flex items-center space-x-2">
-                        <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-                        <h3 class="font-bold text-slate-700 text-sm">Reunião Agendada</h3>
-                    </div>
-                    <span id="col-count-reuniao" class="bg-white text-slate-600 px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">0</span>
-                </div>
-                <div id="col-reuniao" class="kanban-col flex-1 overflow-y-auto space-y-3 p-1" ondragover="allowDrop(event)" ondragleave="removeDropZone(event)" ondrop="drop(event, 'Reunião Agendada')"></div>
-            </div>
-
-            <!-- COLUMN 4: Fechado -->
-            <div kanban-card-col bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] border border-slate-300 shadow-inner flex-shrink-0 md:flex-shrink>
-                <div class="flex items-center justify-between mb-3 px-1">
-                    <div class="flex items-center space-x-2">
-                        <span class="w-3 h-3 rounded-full bg-indigo-500"></span>
-                        <h3 class="font-bold text-slate-700 text-sm">Fechado / Projeto</h3>
-                    </div>
-                    <span id="col-count-fechado" class="bg-white text-slate-600 px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">0</span>
-                </div>
-                <div id="col-fechado" class="kanban-col flex-1 overflow-y-auto space-y-3 p-1" ondragover="allowDrop(event)" ondragleave="removeDropZone(event)" ondrop="drop(event, 'Fechado')"></div>
-            </div>
-
+        <!-- DYNAMIC KANBAN BOARD CONTAINER -->
+        <section id="kanban-board-section" class="kanban-container pb-6 items-start">
+            <!-- Columns rendered dynamically via JS -->
         </section>
 
     </main>
 
-    <!-- MODAL (CREATE / EDIT) -->
+    <!-- MODAL (CREATE / EDIT ESTABELECIMENTO) -->
     <div id="modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 transform transition-all">
             <div class="flex items-center justify-between pb-4 border-b border-slate-100">
@@ -187,12 +158,9 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Status (Coluna) *</label>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Lista (Status) *</label>
                         <select id="form-status" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600">
-                            <option value="Em Prospecção">Em Prospecção</option>
-                            <option value="Qualificado">Qualificado</option>
-                            <option value="Reunião Agendada">Reunião Agendada</option>
-                            <option value="Fechado">Fechado</option>
+                            <!-- Populated dynamically -->
                         </select>
                     </div>
                     <div>
@@ -212,8 +180,32 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT CLOUD SYNC CORE -->
+    <!-- MODAL (CREATE NOVA LISTA / COLUNA) -->
+    <div id="modal-column" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 transform transition-all">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                <h3 class="text-lg font-bold text-slate-900">Criar Nova Lista</h3>
+                <button onclick="closeColumnModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form onsubmit="saveColumn(event)" class="space-y-4 pt-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Nome da Lista *</label>
+                    <input type="text" id="new-column-name" required placeholder="Ex: Prioridade Alta, Contatados..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                </div>
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeColumnModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition-colors">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold shadow-sm transition-all">Adicionar Lista</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT DYNAMIC KANBAN & CLOUD SYNC -->
     <script>
+        const initialColumns = ["Em Prospecção", "Qualificado", "Reunião Agendada", "Fechado"];
+        
         const initialData = [
             { id: 1, name: "Átrio Restaurante", eixo: "Centro", cuisine: "Latino-Americana / Menu Degustação", contact: "(12) 99196-9212", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 2, name: "Veríssima Bistrô", eixo: "Centro", cuisine: "Contemporânea / Massas", contact: "(12) 99634-7919", status: "Em Prospecção", responsavel: "Não atribuído" },
@@ -254,33 +246,32 @@
             { id: 37, name: "Contemplário", eixo: "Estrada Cunha-Paraty", cuisine: "Cafés, Chás & Lavandas", contact: "(12) 98107-7614", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 38, name: "Coza Flor de Alfazema", eixo: "Caminho do Ouro", cuisine: "Bistrô & Chás Aromáticos", contact: "(12) 3111-3058", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 39, name: "Adega Cunha", eixo: "Centro (Vila Rica)", cuisine: "Adega & Vinhos", contact: "(12) 3111-1417", status: "Em Prospecção", responsavel: "Não atribuído" },
-            { id: 40, name: "Churrascaria do Portal", eixo: "Centro", cuisine: "Churrascaria & Carnes na Brasa", contact: "(12) 1993-2089", status: "Em Prospecção", responsavel: "Não atribuído" }
+            { id: 40, name: "Churrascaria do Portal", eixo: "Centro", cuisine: "Churrascaria & Carnes na Brasa", contact: "(12) 1993-2089", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 41, name: "Raízes Restaurante", eixo: "Estrada Cunha-Paraty", cuisine: "Cozinha com Ingredientes Locais & Horta Própria", contact: "Redes Sociais", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 42, name: "Celeiro do Pinhão", eixo: "Estrada do Paraibuna", cuisine: "Pastel de Shitake com Pinhão & Comida Caipira", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 43, name: "Ateliê Mieko e Mário", eixo: "Caminho do Ouro", cuisine: "Café, Cerâmica & Imersão Cultural", contact: "@ateliermiekoemario", status: "Em Prospecção", responsavel: "Não atribuído" }
         ];
 
+        let crmColumns = JSON.parse(localStorage.getItem('sabores_cunha_columns')) || initialColumns;
         let crmData = JSON.parse(localStorage.getItem('sabores_cunha_crm_cloud')) || initialData;
         let draggedId = null;
         let currentRespFilter = '';
 
-        // Sincronização em nuvem via Cloud Storage / Supabase Realtime Simulation & Broadcast
-        const channel = new BroadcastChannel('sabores_cunha_cloud_sync');
+        // Sincronização em nuvem via BroadcastChannel
+        const channel = new BroadcastChannel('sabores_cunha_cloud_sync_v2');
         channel.onmessage = (event) => {
-            if (event.data && event.data.type === 'SYNC_DATA') {
-                crmData = event.data.payload;
-                localStorage.setItem('sabores_cunha_crm_cloud', JSON.stringify(crmData));
+            if (event.data) {
+                if (event.data.type === 'SYNC_DATA') {
+                    crmData = event.data.payload;
+                    localStorage.setItem('sabores_cunha_crm_cloud', JSON.stringify(crmData));
+                }
+                if (event.data.type === 'SYNC_COLS') {
+                    crmColumns = event.data.payload;
+                    localStorage.setItem('sabores_cunha_columns', JSON.stringify(crmColumns));
+                }
                 renderKanban();
-                flashSyncBadge();
             }
         };
-
-        function flashSyncBadge() {
-            const badge = document.getElementById('sync-status');
-            badge.className = 'bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center transition-all';
-            badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1"></span>Atualizado na Nuvem';
-            setTimeout(() => {
-                badge.className = 'bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center transition-all';
-                badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1"></span>Nuvem Ativa';
-            }, 3000);
-        }
 
         function saveData() {
             localStorage.setItem('sabores_cunha_crm_cloud', JSON.stringify(crmData));
@@ -289,18 +280,21 @@
             updateCounters();
         }
 
+        function saveColumns() {
+            localStorage.setItem('sabores_cunha_columns', JSON.stringify(crmColumns));
+            channel.postMessage({ type: 'SYNC_COLS', payload: crmColumns });
+            renderKanban();
+        }
+
         function setRespFilter(resp) {
             currentRespFilter = resp;
             ['all', 'paula', 'eduardo', 'none'].forEach(p => {
                 const btn = document.getElementById(`pill-${p}`);
-                if (btn) {
-                    btn.className = btn.className.replace('ring-2 ring-slate-900 shadow-md', '');
-                }
+                if (btn) btn.className = btn.className.replace('ring-2 ring-slate-900 shadow-md', '');
             });
             const activeId = resp === '' ? 'pill-all' : (resp === 'Paula' ? 'pill-paula' : (resp === 'Eduardo' ? 'pill-eduardo' : 'pill-none'));
             const activeBtn = document.getElementById(activeId);
             if (activeBtn) activeBtn.className += ' ring-2 ring-slate-900 shadow-md';
-
             renderKanban();
         }
 
@@ -313,36 +307,58 @@
 
         function renderKanban() {
             const query = document.getElementById('search-input').value.toLowerCase();
+            const boardSection = document.getElementById('kanban-board-section');
+            boardSection.innerHTML = '';
             
+            // Set grid columns dynamically on desktop
+            boardSection.style.setProperty('--cols-count', crmColumns.length);
 
             const filtered = crmData.filter(item => {
                 const matchQuery = item.name.toLowerCase().includes(query) || 
                                    (item.cuisine && item.cuisine.toLowerCase().includes(query)) || 
                                    (item.contact && item.contact.toLowerCase().includes(query));
                 const matchResp = currentRespFilter === '' || item.responsavel === currentRespFilter;
-                
-                return matchQuery && matchResp && matchEixo;
+                return matchQuery && matchResp;
             });
 
-            const cols = {
-                'Em Prospecção': document.getElementById('col-prospeccao'),
-                'Qualificado': document.getElementById('col-qualificado'),
-                'Reunião Agendada': document.getElementById('col-reuniao'),
-                'Fechado': document.getElementById('col-fechado')
-            };
+            const colCounts = {};
+            crmColumns.forEach(col => colCounts[col] = 0);
 
-            const counts = {
-                'Em Prospecção': 0,
-                'Qualificado': 0,
-                'Reunião Agendada': 0,
-                'Fechado': 0
-            };
+            crmColumns.forEach(colName => {
+                const colDiv = document.createElement('div');
+                colDiv.className = 'kanban-card-col bg-slate-200/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-240px)] border border-slate-300 shadow-inner flex-shrink-0';
+                
+                // Header of column
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'flex items-center justify-between mb-3 px-1';
+                headerDiv.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-emerald-600"></span>
+                        <h3 class="font-bold text-slate-700 text-sm truncate max-w-[170px]">${colName}</h3>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span id="count-${colName.replace(/\s+/g, '-')}" class="bg-white text-slate-600 px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">0</span>
+                        ${crmColumns.length > 1 ? `<button onclick="deleteColumn('${colName}')" class="text-slate-400 hover:text-rose-600 text-xs" title="Excluir Lista"><i class="fa-solid fa-xmark"></i></button>` : ''}
+                    </div>
+                `;
+                colDiv.appendChild(headerDiv);
 
-            Object.values(cols).forEach(col => col.innerHTML = '');
+                // Body container for cards
+                const bodyDiv = document.createElement('div');
+                bodyDiv.className = 'kanban-col flex-1 overflow-y-auto space-y-3 p-1';
+                bodyDiv.ondragover = (e) => allowDrop(e);
+                bodyDiv.ondragleave = (e) => removeDropZone(e);
+                bodyDiv.ondrop = (e) => drop(e, colName);
+                bodyDiv.id = `col-body-${colName}`;
+                
+                colDiv.appendChild(bodyDiv);
+                boardSection.appendChild(colDiv);
+            });
 
+            // Populate cards into respective columns
             filtered.forEach(item => {
-                const status = cols[item.status] ? item.status : 'Em Prospecção';
-                counts[status]++;
+                const targetCol = crmColumns.includes(item.status) ? item.status : crmColumns[0];
+                colCounts[targetCol]++;
 
                 let respColorClass = 'bg-slate-100 text-slate-600 border-slate-200';
                 if (item.responsavel === 'Paula') respColorClass = 'bg-pink-100 text-pink-800 border-pink-300 font-semibold';
@@ -358,7 +374,7 @@
                     <div class="flex items-start justify-between gap-2 mb-1.5">
                         <h4 class="font-bold text-slate-900 text-sm leading-snug">${item.name}</h4>
                         <div class="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button onclick="openEditModal(${item.id})" class="w-6 h-6 rounded bg-slate-100 text-slate-500 hover:text-emerald-700 flex items-center justify-center text-xs" title="Editar Completo">
+                            <button onclick="openEditModal(${item.id})" class="w-6 h-6 rounded bg-slate-100 text-slate-500 hover:text-emerald-700 flex items-center justify-center text-xs" title="Editar">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
                             <button onclick="deleteItem(${item.id})" class="w-6 h-6 rounded bg-slate-100 text-slate-500 hover:text-rose-600 flex items-center justify-center text-xs" title="Excluir">
@@ -367,25 +383,80 @@
                         </div>
                     </div>
                     <p class="text-xs text-slate-500 mb-2.5 line-clamp-1">${item.cuisine || 'Culinária não especificada'}</p>
-                    
                     <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
                         <select onchange="quickUpdateResp(${item.id}, this.value)" class="text-[11px] px-2 py-1 rounded-lg border ${respColorClass} focus:outline-none focus:ring-1 focus:ring-emerald-600 cursor-pointer">
-                            <option value="Não atribuído" ${item.responsavel === 'Não atribuído' ? 'selected' : ''}>Livres / Não atribuído</option>
+                            <option value="Não atribuído" ${item.responsavel === 'Não atribuído' ? 'selected' : ''}>Livres</option>
                             <option value="Paula" ${item.responsavel === 'Paula' ? 'selected' : ''}>Paula</option>
                             <option value="Eduardo" ${item.responsavel === 'Eduardo' ? 'selected' : ''}>Eduardo</option>
                         </select>
                         <span class="text-[11px] text-slate-400 font-medium truncate max-w-[100px]"><i class="fa-solid fa-phone mr-1 text-[9px]"></i>${item.contact || 'S/N'}</span>
                     </div>
                 `;
-                cols[status].appendChild(card);
+
+                const containerEl = document.getElementById(`col-body-${targetCol}`);
+                if (containerEl) containerEl.appendChild(card);
             });
 
-            document.getElementById('col-count-prospeccao').innerText = counts['Em Prospecção'];
-            document.getElementById('col-count-qualificado').innerText = counts['Qualificado'];
-            document.getElementById('col-count-reuniao').innerText = counts['Reunião Agendada'];
-            document.getElementById('col-count-fechado').innerText = counts['Fechado'];
-            
+            // Update column badge counts
+            crmColumns.forEach(colName => {
+                const badgeEl = document.getElementById(`count-${colName.replace(/\s+/g, '-')}`);
+                if (badgeEl) badgeEl.innerText = colCounts[colName] || 0;
+            });
+
+            updateFormStatusOptions();
             updateCounters();
+        }
+
+        function updateFormStatusOptions() {
+            const select = document.getElementById('form-status');
+            if (!select) return;
+            const currentVal = select.value;
+            select.innerHTML = '';
+            crmColumns.forEach(col => {
+                const opt = document.createElement('option');
+                opt.value = col;
+                opt.innerText = col;
+                if (col === currentVal) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        // Column Management
+        function openColumnModal() {
+            document.getElementById('new-column-name').value = '';
+            document.getElementById('modal-column').classList.remove('hidden');
+        }
+
+        function closeColumnModal() {
+            document.getElementById('modal-column').classList.add('hidden');
+        }
+
+        function saveColumn(event) {
+            event.preventDefault();
+            const name = document.getElementById('new-column-name').value.trim();
+            if (name && !crmColumns.includes(name)) {
+                crmColumns.push(name);
+                saveColumns();
+                closeColumnModal();
+            } else {
+                alert('Nome inválido ou lista já existente.');
+            }
+        }
+
+        function deleteColumn(colName) {
+            if (crmColumns.length <= 1) {
+                alert('O quadro precisa ter ao menos uma lista.');
+                return;
+            }
+            if (confirm(`Deseja excluir a lista "${colName}"? Os locais nela serão movidos para a primeira lista.`)) {
+                const fallbackCol = crmColumns[0] === colName ? crmColumns[1] : crmColumns[0];
+                crmData.forEach(item => {
+                    if (item.status === colName) item.status = fallbackCol;
+                });
+                crmColumns = crmColumns.filter(c => c !== colName);
+                saveColumns();
+                saveData();
+            }
         }
 
         function quickUpdateResp(id, newResp) {
@@ -408,7 +479,6 @@
         function drop(event, newStatus) {
             event.preventDefault();
             event.currentTarget.classList.remove('bg-slate-300/40', 'rounded-xl');
-            
             if (draggedId !== null) {
                 const item = crmData.find(i => i.id === draggedId);
                 if (item) {
@@ -420,7 +490,6 @@
 
         function resetFilters() {
             document.getElementById('search-input').value = '';
-            
             setRespFilter('');
         }
 
@@ -428,6 +497,7 @@
             document.getElementById('modal-title').innerText = 'Novo Estabelecimento';
             document.getElementById('form-id').value = '';
             document.getElementById('crm-form').reset();
+            updateFormStatusOptions();
             document.getElementById('modal').classList.remove('hidden');
         }
 
@@ -439,6 +509,7 @@
             document.getElementById('form-id').value = item.id;
             document.getElementById('form-name').value = item.name;
             document.getElementById('form-eixo').value = item.eixo;
+            updateFormStatusOptions();
             document.getElementById('form-status').value = item.status;
             document.getElementById('form-responsavel').value = item.responsavel || 'Não atribuído';
             document.getElementById('form-cuisine').value = item.cuisine || '';
@@ -481,9 +552,8 @@
             }
         }
 
+        // Initial mount
         setRespFilter('');
     </script>
 </body>
 </html>
-
-<!-- updated -->
