@@ -40,53 +40,135 @@
         }
     </script>
 
-    <!-- MODAL (PROPOSTA COMERCIAL OFICIAL - SABORES DE CUNHA) -->
-    <div id="modal-proposal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-100 transform transition-all max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-emerald-700 text-white p-2.5 rounded-xl shadow-md flex items-center justify-center">
-                        <i class="fa-solid fa-utensils"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-slate-900">Sabores de Cunha • Proposta Oficial</h3>
-                        <p class="text-xs text-slate-500 font-medium">Um movimento pela gastronomia de Cunha</p>
-                    </div>
+    
+    <!-- MODAL (APRESENTAÇÃO OFICIAL - SABORES DE CUNHA) -->
+    <div id="modal-proposal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 hidden">
+        <div class="bg-slate-900 text-slate-100 rounded-3xl max-w-4xl w-full p-6 sm:p-10 shadow-2xl border border-slate-800 transform transition-all max-h-[95vh] overflow-y-auto relative">
+            
+            <!-- HEADER / CONTROLS -->
+            <div class="flex items-center justify-between pb-6 border-b border-slate-800 mb-6">
+                <div>
+                    <span class="text-xs uppercase tracking-widest text-emerald-400 font-bold block mb-1">Apresentação Oficial</span>
+                    <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">Um Movimento Pela Gastronomia de Cunha</h2>
                 </div>
-                <button onclick="closeProposalModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center transition-colors">
-                    <i class="fa-solid fa-xmark"></i>
+                <button onclick="closeProposalModal()" class="w-10 h-10 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            
-            <div class="space-y-6 pt-6 text-slate-700 text-sm leading-relaxed">
-                <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-2xl">
-                    <h4 class="font-bold text-emerald-900 text-sm mb-1">01 — O Cenário & O Problema</h4>
-                    <p class="text-emerald-800 text-xs leading-relaxed">
-                        Já temos restaurantes, cafés, bistrôs e produtores extraordinários em Cunha. O problema não é a qualidade, mas sim que <strong>cada negócio comunica sozinho</strong>. A oportunidade está em apresentar a cidade inteira como uma experiência unificada.
+
+            <!-- SLIDES CONTAINER -->
+            <div id="deck-slides" class="space-y-12">
+                
+                <!-- SLIDE 1: MANIFESTO -->
+                <div class="bg-slate-800/60 border border-slate-700/60 p-6 sm:p-8 rounded-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-6 opacity-10 text-emerald-400 text-7xl font-black">01</div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-2 block">O Manifesto</span>
+                    <h3 class="text-2xl sm:text-3xl font-bold text-white mb-4">Uma cidade. Muitos sabores. Um só destino.</h3>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Estamos unindo restaurantes, cafés, bistrôs, produtores e fornecedores para transformar Cunha em um destino gastronômico reconhecido e unificado.
                     </p>
                 </div>
 
+                <!-- SLIDE 2: O CENÁRIO E O PROBLEMA -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-800/60 border border-slate-700/60 p-6 rounded-2xl">
+                        <span class="text-xs font-bold uppercase tracking-widest text-amber-400 mb-2 block">O Cenário</span>
+                        <h4 class="text-lg font-bold text-white mb-2">O que já temos</h4>
+                        <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                            Restaurantes, cafés, bistrôs, queijarias e fornecedores extraordinários. A qualidade e o talento já estão presentes em cada esquina de Cunha.
+                        </p>
+                    </div>
+                    <div class="bg-slate-800/60 border border-slate-700/60 p-6 rounded-2xl">
+                        <span class="text-xs font-bold uppercase tracking-widest text-rose-400 mb-2 block">O Problema</span>
+                        <h4 class="text-lg font-bold text-white mb-2">Cada negócio comunica sozinho</h4>
+                        <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                            Enquanto cada estabelecimento tenta atrair visitantes por conta própria, o turista enxerga apenas fragmentos. A oportunidade está em apresentar a cidade inteira como experiência.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SLIDE 3: A VISÃO -->
+                <div class="bg-gradient-to-r from-emerald-950 to-emerald-900 border border-emerald-800 p-6 sm:p-8 rounded-2xl text-center">
+                    <span class="text-xs font-bold uppercase tracking-widest text-emerald-300 mb-2 block">Nossa Visão</span>
+                    <h3 class="text-xl sm:text-2xl font-black text-white mb-2">Fazer alguém acordar e dizer:</h3>
+                    <div class="inline-block bg-emerald-800/80 border border-emerald-600 px-6 py-3 rounded-xl my-3">
+                        <p class="text-lg sm:text-xl font-bold text-emerald-200">"Vamos passar o fim de semana em Cunha para comer bem?"</p>
+                    </div>
+                    <p class="text-xs text-emerald-300 uppercase tracking-widest font-semibold mt-2">O poder do coletivo: todos ganham.</p>
+                </div>
+
+                <!-- SLIDE 4: OS 4 PILARES -->
                 <div>
-                    <h4 class="font-bold text-slate-900 mb-3 text-xs uppercase tracking-wider text-slate-400">Os 4 Pilares do Movimento</h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                            <strong class="text-slate-900 block mb-1">01 ✣ Comunidade</strong>
-                            <span class="text-slate-600">Encontros mensais, trocas reais e parcerias entre quem movimenta a gastronomia.</span>
+                    <span class="text-xs font-bold uppercase tracking-widest text-indigo-400 mb-3 block">Como Fazemos (Os 4 Pilares)</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-slate-800/60 border border-slate-700/60 p-5 rounded-xl">
+                            <span class="text-emerald-400 font-bold text-sm block mb-1">01 ✣ Comunidade</span>
+                            <p class="text-slate-300 text-xs">Encontros mensais, trocas reais, parcerias e decisões compartilhadas entre quem movimenta a gastronomia.</p>
                         </div>
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                            <strong class="text-slate-900 block mb-1">02 ✦ Experiências</strong>
-                            <span class="text-slate-600">Festivais, semanas temáticas e roteiros para visitar Cunha o ano todo.</span>
+                        <div class="bg-slate-800/60 border border-slate-700/60 p-5 rounded-xl">
+                            <span class="text-emerald-400 font-bold text-sm block mb-1">02 ✦ Experiências</span>
+                            <p class="text-slate-300 text-xs">Festivais, semanas temáticas, roteiros e encontros que criam novos motivos para visitar Cunha o ano todo.</p>
                         </div>
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                            <strong class="text-slate-900 block mb-1">03 ◉ Comunicação</strong>
-                            <span class="text-slate-600">Presença editorial forte para apresentar Cunha como destino unificado.</span>
+                        <div class="bg-slate-800/60 border border-slate-700/60 p-5 rounded-xl">
+                            <span class="text-emerald-400 font-bold text-sm block mb-1">03 ◉ Comunicação</span>
+                            <p class="text-slate-300 text-xs">Presença editorial forte para apresentar Cunha como experiência: conteúdo, calendário, histórias e divulgação da rede.</p>
                         </div>
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                            <strong class="text-slate-900 block mb-1">04 ↗ Desenvolvimento</strong>
-                            <span class="text-slate-600">Capacitações, imprensa, patrocínios e representatividade coletiva.</span>
+                        <div class="bg-slate-800/60 border border-slate-700/60 p-5 rounded-xl">
+                            <span class="text-emerald-400 font-bold text-sm block mb-1">04 ↗ Desenvolvimento</span>
+                            <p class="text-slate-300 text-xs">Capacitações, imprensa, parcerias, patrocínios e representatividade construídos passo a passo.</p>
                         </div>
                     </div>
                 </div>
+
+                <!-- SLIDE 5: BENEFÍCIOS -->
+                <div class="bg-slate-800/60 border border-slate-700/60 p-6 sm:p-8 rounded-2xl">
+                    <span class="text-xs font-bold uppercase tracking-widest text-amber-400 mb-3 block">Resultados Coletivos</span>
+                    <div class="space-y-4 text-xs sm:text-sm text-slate-300">
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-bullhorn text-emerald-400 mt-1"></i>
+                            <div><strong>Marketing de Destino & Visibilidade:</strong> Manter site, roteiros e Instagram ativo atrai muito mais turistas do que cada negócio panfletando sozinho.</div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-handshake text-emerald-400 mt-1"></i>
+                            <div><strong>Rede de Apoio & Fornecedores:</strong> Poder de negociação em grupo, descontos e acordos exclusivos entre restaurantes, produtores e fornecedores locais.</div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-calendar-days text-emerald-400 mt-1"></i>
+                            <div><strong>Turismo Constante:</strong> Organizar festivais e semanas gastronômicas que movimentam a cidade e lotam mesas fora de temporada.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 6: PARTICIPAÇÃO & ADESÃO -->
+                <div class="bg-gradient-to-br from-slate-800 to-slate-900 border border-emerald-500/40 p-6 sm:p-8 rounded-3xl text-center relative">
+                    <span class="bg-emerald-500 text-slate-950 font-black text-xs uppercase tracking-widest px-3 py-1 rounded-full inline-block mb-3">Adesões Abertas</span>
+                    <h3 class="text-xl sm:text-2xl font-bold text-white mb-2">Contribuição Coletiva</h3>
+                    <div class="my-4">
+                        <span class="text-4xl sm:text-5xl font-black text-emerald-400">R$ 300</span>
+                        <span class="text-xs text-slate-400 uppercase tracking-widest block mt-1">/ mês • para quem acredita no sabor de Cunha</span>
+                    </div>
+                    <p class="text-slate-300 text-xs sm:text-sm max-w-lg mx-auto mb-6">
+                        Um investimento no crescimento coletivo da gastronomia local. Encontros mensais presenciais, vantagens e descontos em rede, participação em festivais e destaque no mapa gastronômico.
+                    </p>
+                    <div class="bg-emerald-950/60 border border-emerald-800/60 p-4 rounded-2xl max-w-md mx-auto text-left text-xs text-emerald-200 space-y-1">
+                        <div class="font-bold text-white mb-1">Nosso Convite:</div>
+                        <div>"Hoje não estamos procurando clientes. <strong>Estamos procurando parceiros.</strong>"</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- FOOTER ACTIONS -->
+            <div class="flex items-center justify-between pt-6 mt-8 border-t border-slate-800">
+                <button onclick="copyProposalText()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-copy"></i>
+                    <span>Copiar Resumo da Apresentação</span>
+                </button>
+                <button onclick="closeProposalModal()" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg transition-all">Fechar Apresentação</button>
+            </div>
+        </div>
+    </div>
+
 
                 <div class="bg-gradient-to-r from-emerald-900 to-emerald-800 text-white p-5 rounded-2xl flex items-center justify-between shadow-lg">
                     <div>
