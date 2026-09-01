@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sabores de Cunha - Prospecção (Cloud Realtime)</title>
+    <title>Sabores de Cunha - Prospecção</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts Inter -->
@@ -68,16 +68,16 @@
                 <div>
                     <div class="flex items-center space-x-2">
                         <h1 class="font-bold text-slate-900 text-base sm:text-lg leading-tight">Sabores de Cunha - Prospecção</h1>
-                        <span id="sync-status" class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1 animate-pulse"></span>Sincronizando Nuvem...
+                        <span id="sync-status" class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1"></span>Ativo
                         </span>
                     </div>
                 </div>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3">
-                <button onclick="forceCloudSync()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1 border border-slate-200" title="Atualizar Nuvem">
-                    <i class="fa-solid fa-cloud-arrow-down"></i>
-                    <span class="hidden sm:inline">Atualizar</span>
+                <button onclick="exportData()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1.5 border border-indigo-200" title="Exportar / Backup">
+                    <i class="fa-solid fa-download"></i>
+                    <span class="hidden sm:inline">Exportar</span>
                 </button>
                 <button onclick="openColumnModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all flex items-center space-x-1.5 border border-slate-200">
                     <i class="fa-solid fa-columns text-xs"></i>
@@ -206,11 +206,8 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT CLOUD SYNC & KANBAN CORE -->
+    <!-- JAVASCRIPT KANBAN CORE -->
     <script>
-        // API pública de nuvem compartilhada em tempo real (NPOint / JSONBin lightweight)
-        const CLOUD_BIN_URL = 'https://api.jsonbin.io/v3/b/65e921d7dc74654018b1d923'; // Canal público compartilhado global
-        // Fallback local robusto
         const initialColumns = ["Em Prospecção", "Qualificado", "Reunião Agendada", "Fechado"];
         const initialData = [
             { id: 1, name: "Átrio Restaurante", eixo: "Centro", cuisine: "Latino-Americana / Menu Degustação", contact: "(12) 99196-9212", status: "Em Prospecção", responsavel: "Não atribuído" },
@@ -245,12 +242,12 @@
             { id: 30, name: "Galpão do Alemão & Reale", eixo: "Rodovia Guará-Cunha", cuisine: "Alemã / Petiscos & Chopes", contact: "Redes Sociais", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 31, name: "Estação Galeto", eixo: "Rodovia Guará-Cunha", cuisine: "Frango / Comida Caseira", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 32, name: "Fazenda Ghertelli", eixo: "Rodovia Guará-Cunha", cuisine: "Italiana / Brasileira Rural", contact: "(12) 99730-0420", status: "Em Prospecção", responsavel: "Não atribuído" },
-            { id: 33, name: "Pesqueiro do Rocão", eixo: "Rodovia Guará-Cunha", cuisine: "Peixes / Pesca Esportiva", contact: "Contato Local", status: "Em Prospecção", responsavel: "Non atribuído" },
+            { id: 33, name: "Pesqueiro do Rocão", eixo: "Rodovia Guará-Cunha", cuisine: "Peixes / Pesca Esportiva", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 34, name: "Café das Três", eixo: "Centro", cuisine: "Cafeteria & Croissants Especiais", contact: "Redes Sociais", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 35, name: "Da Roça Empório e Restaurante", eixo: "Estrada Cunha-Paraty", cuisine: "Cozinha Caipira / Feijoada", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 36, name: "Pesqueiro e Restaurante Rio Manso", eixo: "Zona Rural / Cunha", cuisine: "Trutas & Culinária Caipira", contact: "Contato Local", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 37, name: "Contemplário", eixo: "Estrada Cunha-Paraty", cuisine: "Cafés, Chás & Lavandas", contact: "(12) 98107-7614", status: "Em Prospecção", responsavel: "Não atribuído" },
-            { id: 38, name: "Coza Flor de Alfazema", eixo: "Caminho do Ouro", cuisine: "Bistrô & Chás Aromáticos", contact: "(12) 3111-3058", status: "Em Prospecção", responsavel: "Não atribuído" },
+            { id: 38, name: "Coza Flor de Alfazema", eixo: "Caminho do Ouro", cuisine: "Bistrô & Chás Aromáticos", contact: "(12) 3111-3058", status: "Em Prospecção", responsavel: "Non atribuído" },
             { id: 39, name: "Adega Cunha", eixo: "Centro (Vila Rica)", cuisine: "Adega & Vinhos", contact: "(12) 3111-1417", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 40, name: "Churrascaria do Portal", eixo: "Centro", cuisine: "Churrascaria & Carnes na Brasa", contact: "(12) 1993-2089", status: "Em Prospecção", responsavel: "Não atribuído" },
             { id: 41, name: "Raízes Restaurante", eixo: "Estrada Cunha-Paraty", cuisine: "Cozinha com Ingredientes Locais & Horta Própria", contact: "Redes Sociais", status: "Em Prospecção", responsavel: "Não atribuído" },
@@ -258,91 +255,30 @@
             { id: 43, name: "Ateliê Mieko e Mário", eixo: "Caminho do Ouro", cuisine: "Café, Cerâmica & Imersão Cultural", contact: "@ateliermiekoemario", status: "Em Prospecção", responsavel: "Não atribuído" }
         ];
 
-        let crmColumns = JSON.parse(localStorage.getItem('sabores_cunha_columns')) || initialColumns;
-        let crmData = JSON.parse(localStorage.getItem('sabores_cunha_crm_cloud')) || initialData;
+        let crmColumns = JSON.parse(localStorage.getItem('sabores_cunha_columns_v3')) || initialColumns;
+        let crmData = JSON.parse(localStorage.getItem('sabores_cunha_crm_v3')) || initialData;
         let draggedId = null;
         let currentRespFilter = '';
 
-        // Sincronização Global em Tempo Real via Cloud Storage (LocalStorage sincronizado por polling de nuvem)
-        async function fetchCloudData() {
-            try {
-                const res = await fetch('https://api.jsonbin.io/v3/b/65e921d7dc74654018b1d923/latest', {
-                    headers: { 'X-Master-Key': '$2a$10$7... (public)' }
-                });
-                if (res.ok) {
-                    const json = await res.json();
-                    if (json.record && json.record.data) {
-                        crmData = json.record.data;
-                        if (json.record.columns) crmColumns = json.record.columns;
-                        localStorage.setItem('sabores_cunha_crm_cloud', JSON.stringify(crmData));
-                        localStorage.setItem('sabores_cunha_columns', JSON.stringify(crmColumns));
-                        renderKanban();
-                        setSyncActive(true);
-                    }
-                }
-            } catch (e) {
-                // Se falhar a API pública, usa o canal de sincronização local inteligente baseado em localStorage events
-                setSyncActive(false);
-            }
-        }
-
-        async function pushCloudData() {
-            localStorage.setItem('sabores_cunha_crm_cloud', JSON.stringify(crmData));
-            localStorage.setItem('sabores_cunha_columns', JSON.stringify(crmColumns));
+        function saveData() {
+            localStorage.setItem('sabores_cunha_crm_v3', JSON.stringify(crmData));
             renderKanban();
             updateCounters();
-            
-            // Disparar evento para outras abas no mesmo dispositivo e sincronização cruzada
-            window.dispatchEvent(new Event('storage_updated'));
-        }
-
-        // Listener para sincronização instantânea entre abas / janelas no mesmo aparelho
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'sabores_cunha_crm_cloud' || e.key === 'sabores_cunha_columns') {
-                crmData = JSON.parse(localStorage.getItem('sabores_cunha_crm_cloud')) || initialData;
-                crmColumns = JSON.parse(localStorage.getItem('sabores_cunha_columns')) || initialColumns;
-                renderKanban();
-                flashSyncBadge();
-            }
-        });
-
-        window.addEventListener('storage_updated', () => {
-            crmData = JSON.parse(localStorage.getItem('sabores_cunha_crm_cloud')) || initialData;
-            crmColumns = JSON.parse(localStorage.getItem('sabores_cunha_columns')) || initialColumns;
-            renderKanban();
-        });
-
-        function setSyncActive(isActive) {
-            const statusEl = document.getElementById('sync-status');
-            if (statusEl) {
-                statusEl.className = 'bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center';
-                statusEl.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse"></span>Tempo Real Ativo';
-            }
-        }
-
-        function flashSyncBadge() {
-            const statusEl = document.getElementById('sync-status');
-            if (statusEl) {
-                statusEl.className = 'bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center transition-all';
-                statusEl.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1"></span>Atualizado!';
-                setTimeout(() => setSyncActive(true), 2000);
-            }
-        }
-
-        function forceCloudSync() {
-            crmData = JSON.parse(localStorage.getItem('sabores_cunha_crm_cloud')) || initialData;
-            crmColumns = JSON.parse(localStorage.getItem('sabores_cunha_columns')) || initialColumns;
-            renderKanban();
-            flashSyncBadge();
-        }
-
-        function saveData() {
-            pushCloudData();
         }
 
         function saveColumns() {
-            localStorage.setItem('sabores_cunha_columns', JSON.stringify(crmColumns));
-            pushCloudData();
+            localStorage.setItem('sabores_cunha_columns_v3', JSON.stringify(crmColumns));
+            renderKanban();
+        }
+
+        function exportData() {
+            const backup = { columns: crmColumns, data: crmData };
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sabores_cunha_crm_backup.json';
+            a.click();
         }
 
         function setRespFilter(resp) {
@@ -599,15 +535,14 @@
         }
 
         function deleteItem(id) {
-            if (confirm('Deseja realmente excluir este estabelecimento do CRM?')) {
+            if (confirm('Desejaรายlemente excluir este estabelecimento do CRM?')) {
                 crmData = crmData.filter(i => i.id !== id);
                 saveData();
             }
         }
 
-        // Initial mount & periodic check
+        // Initial mount
         setRespFilter('');
-        setInterval(fetchCloudData, 4000); // Sincroniza automaticamente a cada 4 segundos com a nuvem
     </script>
 </body>
 </html>
